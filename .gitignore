@@ -17,8 +17,5 @@
 *.fasta
 *.txt
 
-# Ignore shell scripts
-*.sh
-
 # Ignore user-specific config
 config.R
