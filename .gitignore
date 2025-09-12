@@ -1,0 +1,24 @@
+# Ignore R project files
+*.Rproj
+.Rhistory
+.RData
+.Rproj.user/
+
+# Ignore output files
+*.nex
+*.svg
+*.xlsx
+*.csv
+*.tsv
+*.fai
+*.phy
+*.treefile
+*.fas
+*.fasta
+*.txt
+
+# Ignore shell scripts
+*.sh
+
+# Ignore user-specific config
+config.R
