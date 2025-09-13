@@ -4,19 +4,39 @@
 library(readxl)
 library(ape)
 
+#Load source functions
+source("fun.R")
+
 #####################################
 # -- popmap for Network Analysis ---#
 #####################################
 
-# Load user-specific configuration file with file paths
-config <- yaml::read_yaml("config.yaml") #---> Modify config_example.R with user-specific configuration and rename to config.R
+#Generate a file called "config.ymal" if it doesn't exist
+if(!file.exists("config.yaml")){
+  cat("file_name: ''\nmetadata.file: ''", file = "config.yaml")
+  stop("A config.yaml file has been created. Please edit it with the correct file paths and run the script again.")
+} else {
+  # Load user-specific configuration file with file paths
+  config <- yaml::read_yaml("config.yaml") 
+  cat(paste0("Configuration loaded from config.yaml:\n",
+             "Fasta file: ", config$file_name, "\n",
+             "Metadata file: ", config$metadata.file, "\n"))
+}
 
-# Read fasta file 
+# Read Input files 
 fasta.file <- read.FASTA(config$file_name)
 fasta.labels <- names(fasta.file)
 metadata.file <- read_excel(config$metadata.file,trim_ws = T,na = "NA")
 
 # Match labels from fasta file to metadata file
+# Extract metadata based on matching IDs
+
+selected.data <- Get.Matched.ID(queryID = fasta.labels,
+               metadata = metadata.file,
+               ByColname = "Barcode")
+
+length(fasta.labels)
+dim(selected.data)
 
 # #This function will split the string into multiple columns. I used it to extract the site name.
 # #lets add names to the columns so we know what they are
