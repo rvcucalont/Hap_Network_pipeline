@@ -1,41 +1,44 @@
-library(stringr)
-library(dplyr)
-library(viridis)
+# library(stringr)
+# library(dplyr)
+# library(viridis)
 library(readxl)
+library(ape)
 
 #####################################
 # -- popmap for Network Analysis ---#
 #####################################
-#input data obtained with the script Fin_hap.R
-# Load user-specific configuration
-source("config.R") #---> Modify config_example.R with user-specific configuration and rename to config.R
-#Read in data TSV file from source("config.R")
 
-in_table <- read.table(file_name)
-#Read in metadata file from source("config.R")
-master_sheet <- read_excel(Metadata.file,trim_ws = T,na = "NA")
+# Load user-specific configuration file with file paths
+config <- yaml::read_yaml("config.yaml") #---> Modify config_example.R with user-specific configuration and rename to config.R
 
-#This function will split the string into multiple columns. I used it to extract the site name.
-#lets add names to the columns so we know what they are
-colnames(in_table) <- c("Haplotype","Sample_Name")
-in_table
-in_table$Site <- as.data.frame(str_split_fixed(in_table$Sample_Name,pattern = "_",n=3))[,3]
-in_table$Seq.ID <- as.data.frame(str_split_fixed(in_table$Sample_Name,pattern = "_",n=3))[,1]
-in_table$new_name <- paste(in_table$Sample_Name,"_",in_table$Haplotype, sep = "")
-in_table
+# Read fasta file 
+fasta.file <- read.FASTA(config$file_name)
+fasta.labels <- names(fasta.file)
+metadata.file <- read_excel(config$metadata.file,trim_ws = T,na = "NA")
+
+# Match labels from fasta file to metadata file
+
+# #This function will split the string into multiple columns. I used it to extract the site name.
+# #lets add names to the columns so we know what they are
+# colnames(fasta.file) <- c("Haplotype","Sample_Name")
+# fasta.file
+# fasta.file$Site <- as.data.frame(str_split_fixed(fasta.file$Sample_Name,pattern = "_",n=3))[,3]
+# fasta.file$Seq.ID <- as.data.frame(str_split_fixed(fasta.file$Sample_Name,pattern = "_",n=3))[,1]
+# fasta.file$new_name <- paste(fasta.file$Sample_Name,"_",fasta.file$Haplotype, sep = "")
+# fasta.file
 
 #fix name NC_080906.1_Notropis_volucellus_Hap32
-in_table$Site[54] <- "volucellus"
-in_table$Seq.ID[54] <- "NC_080906.1"
+fasta.file$Site[54] <- "volucellus"
+fasta.file$Seq.ID[54] <- "NC_080906.1"
 
 
 #Add a new group
 Allegheny <- c("APool8"  ,  "APool7" ,"APool6",  "APool5" , "APool4")
 Monongahela <- c("MPool3"   ,   "MPool4"   ,    "MPool5", "MPool6")
 
-network_popmap <- in_table %>% mutate(group = case_when(in_table$Site %in% Allegheny ~ "Allegheny",
-                                                        in_table$Site %in% Monongahela ~ "Monongahela",
-                                                    !in_table$Site %in% Monongahela ~ in_table$Site))
+network_popmap <- fasta.file %>% mutate(group = case_when(fasta.file$Site %in% Allegheny ~ "Allegheny",
+                                                        fasta.file$Site %in% Monongahela ~ "Monongahela",
+                                                    !fasta.file$Site %in% Monongahela ~ in_table$Site))
 # Site_order <- data.frame(Seq.ID=master_sheet$Seq.ID, Place=master_sheet$Place)
 # network_popmap <- merge(network_popmap,Site_order, by = "Seq.ID")
 network_popmap
@@ -46,10 +49,10 @@ network_popmap
 # Specify which columns to keep from the metadata file
 Keep.columns <- c("Seq.ID","Site","HUC2Name", "Region","System","Plain",
                   "Ecoregion","HUC4Name","Species","mtDNA-ID","Source")
-master_sheet <- master_sheet[,Keep.columns]
+metadata.file <- metadata.file[,Keep.columns]
 
 # Merge the two data frames based on the Seq.ID column
-network_popmap <- merge(network_popmap,master_sheet, by.x = "Seq.ID", by.y = "Seq.ID")
+network_popmap <- merge(network_popmap,metadata.file, by.x = "Seq.ID", by.y = "Seq.ID")
 network_popmap
 
 #Add a column to network_popmap that concatenates EcoID and mtDNA from the metadata file

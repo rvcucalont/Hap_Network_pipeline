@@ -1,0 +1,9 @@
+# config_example.yaml
+# Copy this file to config.yaml and edit the paths below for your local setup
+
+#file_name data obtained with the script Fin_hap.R (See README file for more details)
+# Path to your haplotype table (TSV)
+file_name: "path/to/your/cytb-labels.tsv"
+
+# Path to your metadata Excel file
+Metadata.file: "path/to/your/metadata.xlsx"
