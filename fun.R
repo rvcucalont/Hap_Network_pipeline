@@ -73,7 +73,7 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
           unMatched.ID[i] <- queryID[i]
         } else {
           unMatched.ID[i] <- NA
-        }##
+        }
       }
     }
     setTxtProgressBar(pb, i)
@@ -96,6 +96,11 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
     cat("Returning metadata based on IDs specified.\n\n")
     Matched.Data
   }
+  #print the number of matched IDs
+  cat(paste("Number of matched IDs:", length(Matched.ID)," (", 
+            round((length(queryID)-length(Matched.ID))/(length(queryID))*100),")%\n",sep = ""))
+  # print the number unmatched IDs
+  cat(paste("Number of unmatched IDs:", (length(queryID)-length(Matched.ID)),"\n"))
   # print the unmatched IDs
   cat(paste("Unmatched IDs:", paste(unMatched.ID, collapse = ", ")))
   
@@ -106,9 +111,9 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
 
 #-- Example usage: --#
 
-IDs <- Get.Matched.ID(queryID = c("Sample1_A", "Sample2_B", "Sample3_C"),
-               metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4"),
-                                     OtherInfo = c(10, 20, 30)),
+IDs <- Get.Matched.ID(queryID = c("Sample1_A", "Sample2_B", "Sample3_C","Sample5_D"),
+               metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4","Sample5"),
+                                     OtherInfo = c(10, 20, 30,NA)),
                ByColname = "SampleID",keepCol = "OtherInfo")
 print(IDs)
 # Should return data.frame:
