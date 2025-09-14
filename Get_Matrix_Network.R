@@ -64,7 +64,11 @@ network_ByGroup
 
 # get the sites ordered from table for consistency
 unique(network_ByGroup[,2])
-site_ordered <- unique(network_ByGroup[,2])[[1]]
+# site_ordered <- unique(network_ByGroup[,2])[[1]]
+
+site_ordered <- c("English_Winnipeg_Lakes", "Upper_Mississippi","Laurentian_Great_Lakes",
+                  "Teays_Old_Ohio","St.Lawrence", "Ozark_Highlands","Lower_Mississippi", "Sabine_Galveston")
+
 # site_ordered <- c( "McFarland", "Marcell", "LaSalleLake" ,  "WhiteEarthLake","Battle" , "Croix"   ,   "Pool1"  ,    "DevilsLake",
                    # "Pool4" ,  "OpenR" ,  "Ashtabula" , "FrenchCr", "Allegheny" , "Monongahela", "Dam2"  , "buchanani" , "volucellus"  )
 
