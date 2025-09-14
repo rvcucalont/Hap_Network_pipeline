@@ -21,15 +21,15 @@ Match.ID <- function(query="Sample1",string="Sample1.A") {
     pattern3 <- paste0(best_separator,query,best_separator)
     pattern4 <- paste0(query)
     # Print the patterns being used for debugging
-    if (grepl(pattern1, string) || grepl(pattern2, string) || grepl(pattern3, string) || grepl(pattern4, string)) {
+    if (grepl(pattern1, string) || grepl(pattern2, string) || grepl(pattern3, string) || pattern4 == string) {
       queryfound <- query
-      NoqueryFound <- NA_character_
+      stringSearched <- string
     } else {
       #NoqueryFound <- query
       queryfound <- NA_character_
-      NoqueryFound <- string
+      stringSearched <- string
     }
-    return(list(queryfound,NoqueryFound))
+    return(list(queryfound,stringSearched))
   }
 }
 
@@ -52,6 +52,7 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
   # Initialize an empty vector to store matched IDs
   Matched.ID <- vector()
   unMatched.ID <- vector()
+  label.ID <- vector()
   # Loop through the tree tip labels and the metadata file to find matches
   # If a match is found, store the matched ID in the Matched.ID vector
   # show progress bar "---" for the for loop
@@ -63,11 +64,11 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
     for(j in 1:dim(metadata)[1]){
       if (!is.na(Match.ID(metadata[[ByColname]][j],queryID[i]))[[1]]){
         Matched.ID[i] <- Match.ID(metadata[[ByColname]][j], queryID[i])[[1]]
+        label.ID[i] <- Match.ID(metadata[[ByColname]][j], queryID[i])[[2]]
         # print(paste("matched:",Matched.ID[i],"with",queryID[i]))
         break
       } else {
         counter <- counter + 1
-        #unMatched.ID[j] <- Match.ID(metadata[[ByColname]][j], queryID[i])[[2]]
         # print(paste("length unmatched:",counter,"dim metadata:",dim(metadata)[1]))
         # print(paste("unmatched:",metadata[[ByColname]][j], "with", queryID[i]))
         # conditional if the total number of unmatched IDs is equal to the number of rows 
@@ -85,7 +86,9 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
   }
   close(pb)
   Matched.ID <- as.character(na.omit(Matched.ID))
-  #print(Matched.ID)
+  label.ID <- as.character(na.omit(label.ID))
+  # print(Matched.ID)
+  # print(label.ID)
   unMatched.ID <- as.character(na.omit(unMatched.ID))
   #print(unMatched.ID)
   # If keepCol is specified, return a data frame with matched IDs and the specified columns
@@ -94,12 +97,16 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
       stop("Some columns in keepCol not found in metadata.\n\n")
     }
     Matched.Data <- metadata[match(Matched.ID,metadata[[ByColname]]),c(ByColname,keepCol)]
+    # combine queryID and Matched.ID to create a new column called Sample_Name
+    Matched.Data <- data.frame(label = label.ID, Matched.Data)
     cat("Returning metadata subset based on IDs and colnames specified.\n\n")
-    Matched.Data
+    
   } else {
     Matched.Data <- metadata[match(Matched.ID,metadata[[ByColname]]),]
+    # combine queryID and Matched.ID to create a new column called Sample_Name
+    Matched.Data <- data.frame(label = label.ID, Matched.Data)
     cat("Returning metadata based on IDs specified.\n\n")
-    Matched.Data
+    
   }
   #print the number of matched IDs
   cat(paste("Number of matched IDs:", length(Matched.ID)," (", 
@@ -116,9 +123,9 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
 
 #-- Example usage: --#
 
-IDs <- Get.Matched.ID(queryID = c("Sample0_A", "Sample2_B", "Sample3_C","Sample5_D"),
-               metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4","Sample5",NA),
-                                     OtherInfo = c(10, 20, 30,NA,34)),
+IDs <- Get.Matched.ID(queryID = c("Sample0_A", "Sample2_B", "Sample3_C","Sample5_D","Sample4"),
+               metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4","Sample5",NA,"Sample"),
+                                     OtherInfo = c(10, 20, 30,NA,34,NA)),
                ByColname = "SampleID",keepCol = "OtherInfo")
 print(IDs)
 # Should return data.frame:

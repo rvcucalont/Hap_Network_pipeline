@@ -1,5 +1,5 @@
 # library(stringr)
-# library(dplyr)
+library(dplyr)
 # library(viridis)
 library(readxl)
 library(ape)
@@ -47,14 +47,12 @@ colnames(selected.data)
 GROUP <- "Ecoregion"
 
 #Get the number of haplotypes per site
-network_table <- selected.data %>% group_by(new_name,!!sym(GROUP)) %>% 
+network_table <- selected.data %>% group_by(label,!!sym(GROUP)) %>% 
   summarise(
-    N = length(Sample_Name)
+    N = length(label)
   )
 network_table
 
-#change name of the grouping column to "group"
-#colnames(network_table)[2] <- "group"
 
 # get the sites ordered from table <------------------Needs Fixing from this point!!!
 unique(network_table[,2])
