@@ -1,5 +1,0 @@
-# config.yaml
-# User-specific configuration for file paths
-#file_name data obtained with the script Fin_hap.R (See README file for more details)
-file_name: "trimmed_mimic_clade_Cytb_full_aligned_06-18-2025_allhap.fasta"  # change to your local fasta file path
-metadata.file: "D:/HDD drive/My_Drive/University of Illinois Urbana-Champaign/THESIS PROJECT/PROPOSALS/My_Dissertation/MasterSheet/MasterSheet_SH_v9.xlsx"  # Change to your local metadata file path
