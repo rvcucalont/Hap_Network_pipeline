@@ -63,21 +63,20 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
     for(j in 1:dim(metadata)[1]){
       if (!is.na(Match.ID(metadata[[ByColname]][j],queryID[i]))[[1]]){
         Matched.ID[i] <- Match.ID(metadata[[ByColname]][j], queryID[i])[[1]]
-        #print(paste("matched:",Matched.ID[i],"with",queryID[i]))
+        # print(paste("matched:",Matched.ID[i],"with",queryID[i]))
         break
       } else {
         counter <- counter + 1
         #unMatched.ID[j] <- Match.ID(metadata[[ByColname]][j], queryID[i])[[2]]
-        #print(paste("length unmatched:",length(unMatched.ID),"dim metadata:",dim(metadata)[1]))
-        #print(paste("unmatched:",metadata[[ByColname]][j], "with", queryID[i]))
+        # print(paste("length unmatched:",counter,"dim metadata:",dim(metadata)[1]))
+        # print(paste("unmatched:",metadata[[ByColname]][j], "with", queryID[i]))
         # conditional if the total number of unmatched IDs is equal to the number of rows 
         #in the metadata then keep the unmatched ID
         if (counter == dim(metadata)[1]) {
-          unMatched.ID[j] <- queryID[i]
+          unMatched.ID[length(unMatched.ID)+1] <- queryID[i]
+          # print(unMatched.ID)
           counter <- 0
-        } else {
-          unMatched.ID[j] <- NA
-        }
+        } 
       }
         #print(paste("matched:",Matched.ID[i],"with",queryID[i]))
         #print(paste("unmatched:",unMatched.ID[i],"with",queryID[i]))
@@ -104,7 +103,7 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
   }
   #print the number of matched IDs
   cat(paste("Number of matched IDs:", length(Matched.ID)," (", 
-            round((length(queryID)-length(Matched.ID))/(length(queryID))*100),")%\n",sep = ""))
+            round((length(Matched.ID))/(length(queryID))*100,digits = 2),")%\n",sep = ""))
   # print the number unmatched IDs
   cat(paste("Number of unmatched IDs:", (length(queryID)-length(Matched.ID)),"\n"))
   # print the unmatched IDs
@@ -117,7 +116,7 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
 
 #-- Example usage: --#
 
-IDs <- Get.Matched.ID(queryID = c("Sample0_A", "Sample2_B", "Sample3_C","Sample5_D",),
+IDs <- Get.Matched.ID(queryID = c("Sample0_A", "Sample2_B", "Sample3_C","Sample5_D"),
                metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4","Sample5",NA),
                                      OtherInfo = c(10, 20, 30,NA,34)),
                ByColname = "SampleID",keepCol = "OtherInfo")

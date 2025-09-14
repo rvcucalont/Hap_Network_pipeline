@@ -33,7 +33,7 @@ metadata.file <- read_excel(config$metadata.file,trim_ws = T,na = "NA")
 
 selected.data <- Get.Matched.ID(queryID = fasta.labels,
                metadata = metadata.file,
-               ByColname = "Barcode")
+               ByColname = "Seq.ID")
 
 length(fasta.labels)
 dim(selected.data)
