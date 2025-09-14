@@ -34,6 +34,21 @@ selected.data <- Get.Matched.ID(queryID = fasta.labels,
 
 selected.data
 
+#------Use this space to add custom modifications to the selected.data data frame if needed------#
+# For example, to create a new column based on existing columns:
+
+# Replace spaces or dashes with underscores in all columns of the dataframe
+selcted.data <- selected.data %>%
+  mutate(across(everything(), ~ gsub("[- ]", "_", .)))
+
+# Replace multple underscores with only one underscode across all columns of the dataframe
+selected.data <- selcted.data %>%
+  mutate(across(everything(), ~ gsub("_+", "_", .)))
+selected.data
+
+#-------------------------------------------------------------------------------------------------#
+
+
 #Choose columns to keep for the final matrix
 colnames(selected.data)
 
