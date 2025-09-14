@@ -54,26 +54,11 @@ network_table <- selected.data %>% group_by(label,!!sym(GROUP)) %>%
 network_table
 
 
-# get the sites ordered from table <------------------Needs Fixing from this point!!!
+# get the sites ordered from table for consistency
 unique(network_table[,2])
-site_ordered <- as.vector(unique(network_table[,2]))[[1]]
+site_ordered <- unique(network_table[,2])[[1]]
 # site_ordered <- c( "McFarland", "Marcell", "LaSalleLake" ,  "WhiteEarthLake","Battle" , "Croix"   ,   "Pool1"  ,    "DevilsLake",
                    # "Pool4" ,  "OpenR" ,  "Ashtabula" , "FrenchCr", "Allegheny" , "Monongahela", "Dam2"  , "buchanani" , "volucellus"  )
-
-
-
-
-#remove first column with the order number of the sites
-# network_table <- network_table[,-1]
-# network_table
-tol21rainbow= c("#771155", "#CC99BB", "#114477", "#77AADD", "#117777", 
-                "#44AAAA", "#77CCCC", "#117744", "#44AA77", "#88CCAA", 
-                "#777711", "#AAAA44", "#DDDD77", "#774411", "#AA7744", 
-                "#DDAA77", "#AA4455")
-
-tol21rainbow= c("#771155", "#AA4488", "#CC99BB", "#114477", "#4477AA", "#77AADD", "#117777", "#44AAAA", "#77CCCC", "#117744", "#44AA77", "#88CCAA", "#777711", "#AAAA44", "#DDDD77", "#774411", "#AA7744", "#DDAA77", "#771122", "#AA4455", "#DD7788")
-
-#pal(tol21rainbow)
 
 
 #convert the table into a pairwise matrix and then data frame for easier access to the values
