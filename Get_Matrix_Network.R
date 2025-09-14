@@ -5,7 +5,7 @@ library(readxl)
 library(ape)
 
 #Load source functions
-source("fun.R")
+source("functions.R")
 
 #####################################
 # -- popmap for Network Analysis ---#
@@ -29,69 +29,25 @@ fasta.labels <- names(fasta.file)
 metadata.file <- read_excel(config$metadata.file,trim_ws = T,na = "NA")
 
 # Match labels from fasta file to metadata file
-# Extract metadata based on matching IDs
+# Select which columns to keep from the metadata file
+Keep.columns <- c("Site","HUC2Name", "Region","System","Plain",
+                  "Ecoregion","HUC4Name","Species","mtDNA-ID","Source")
 
+# Extract metadata based on matching IDs
 selected.data <- Get.Matched.ID(queryID = fasta.labels,
                metadata = metadata.file,
-               ByColname = "Seq.ID")
+               ByColname = "Seq.ID",
+               keepCol = Keep.columns)
 
-length(fasta.labels)
-dim(selected.data)
-View(selected.data)
-
-# #This function will split the string into multiple columns. I used it to extract the site name.
-# #lets add names to the columns so we know what they are
-# colnames(fasta.file) <- c("Haplotype","Sample_Name")
-# fasta.file
-# fasta.file$Site <- as.data.frame(str_split_fixed(fasta.file$Sample_Name,pattern = "_",n=3))[,3]
-# fasta.file$Seq.ID <- as.data.frame(str_split_fixed(fasta.file$Sample_Name,pattern = "_",n=3))[,1]
-# fasta.file$new_name <- paste(fasta.file$Sample_Name,"_",fasta.file$Haplotype, sep = "")
-# fasta.file
-
-#fix name NC_080906.1_Notropis_volucellus_Hap32
-fasta.file$Site[54] <- "volucellus"
-fasta.file$Seq.ID[54] <- "NC_080906.1"
-
-
-#Add a new group
-Allegheny <- c("APool8"  ,  "APool7" ,"APool6",  "APool5" , "APool4")
-Monongahela <- c("MPool3"   ,   "MPool4"   ,    "MPool5", "MPool6")
-
-network_popmap <- fasta.file %>% mutate(group = case_when(fasta.file$Site %in% Allegheny ~ "Allegheny",
-                                                        fasta.file$Site %in% Monongahela ~ "Monongahela",
-                                                    !fasta.file$Site %in% Monongahela ~ in_table$Site))
-# Site_order <- data.frame(Seq.ID=master_sheet$Seq.ID, Place=master_sheet$Place)
-# network_popmap <- merge(network_popmap,Site_order, by = "Seq.ID")
-network_popmap
-
-
-
-#Lets add metadata information to the network_popmap based on the Seq.ID match with the metadata.file
-# Specify which columns to keep from the metadata file
-Keep.columns <- c("Seq.ID","Site","HUC2Name", "Region","System","Plain",
-                  "Ecoregion","HUC4Name","Species","mtDNA-ID","Source")
-metadata.file <- metadata.file[,Keep.columns]
-
-# Merge the two data frames based on the Seq.ID column
-network_popmap <- merge(network_popmap,metadata.file, by.x = "Seq.ID", by.y = "Seq.ID")
-network_popmap
-
-#Add a column to network_popmap that concatenates EcoID and mtDNA from the metadata file
-#create a new column called EcoSpecies that concatenates Ecoregion and mtDNA-ID
-#If the mtDNA-ID is Paranotropis buch
-network_popmap <- network_popmap %>% mutate(EcoSpecies = case_when(mtDNA.ID == "Paranotropis buchanani" ~ paste(Ecoregion,"buchanani",sep = "_"),
-                                                                   mtDNA.ID == "Notropis volucellus" ~ paste(Ecoregion,"volucellus",sep = "_"),
-                                                                   TRUE ~ paste(Ecoregion,mtDNA.ID,sep = "_")))
-
-
+selected.data
 
 #Choose columns to keep for the final matrix
-colnames(network_popmap)
+colnames(selected.data)
 
 GROUP <- "Ecoregion"
 
 #Get the number of haplotypes per site
-network_table <- network_popmap %>% group_by(new_name,!!sym(GROUP)) %>% 
+network_table <- selected.data %>% group_by(new_name,!!sym(GROUP)) %>% 
   summarise(
     N = length(Sample_Name)
   )
