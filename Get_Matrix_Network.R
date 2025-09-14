@@ -37,6 +37,7 @@ selected.data <- Get.Matched.ID(queryID = fasta.labels,
 
 length(fasta.labels)
 dim(selected.data)
+View(selected.data)
 
 # #This function will split the string into multiple columns. I used it to extract the site name.
 # #lets add names to the columns so we know what they are

@@ -8,7 +8,7 @@
 # Only one separator should be considered at a time, the one with highest frequency in the string
 Match.ID <- function(query="Sample1",string="Sample1.A") {
   if (is.na(query)) {
-    return(NA_character_)
+    return(list(NA_character_,NA_character_))
   } else {
     separators <- c("_", "-", " ", "."," | ")
     # Count the occurrences of each separator in the string
@@ -57,24 +57,30 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
   # show progress bar "---" for the for loop
   pb <- txtProgressBar(min = 0, max = length(queryID), style = 3)
   for(i in 1:length(queryID)){
-    Matched.ID[i] <- NA
-    unMatched.ID[i] <- NA
+    #Matched.ID[i] <- NA
+    #unMatched.ID[i] <- NA
+    counter <- 0
     for(j in 1:dim(metadata)[1]){
       if (!is.na(Match.ID(metadata[[ByColname]][j],queryID[i]))[[1]]){
         Matched.ID[i] <- Match.ID(metadata[[ByColname]][j], queryID[i])[[1]]
         #print(paste("matched:",Matched.ID[i],"with",queryID[i]))
         break
       } else {
-        unMatched.ID[i] <- Match.ID(metadata[[ByColname]][j], queryID[i])[[2]]
-        #print(paste("unmatched:",metadata[[ByColname]][j], "with", unMatched.ID[i]))
+        counter <- counter + 1
+        #unMatched.ID[j] <- Match.ID(metadata[[ByColname]][j], queryID[i])[[2]]
+        #print(paste("length unmatched:",length(unMatched.ID),"dim metadata:",dim(metadata)[1]))
+        #print(paste("unmatched:",metadata[[ByColname]][j], "with", queryID[i]))
         # conditional if the total number of unmatched IDs is equal to the number of rows 
         #in the metadata then keep the unmatched ID
-        if (length(unMatched.ID) == dim(metadata)[1]) {
-          unMatched.ID[i] <- queryID[i]
+        if (counter == dim(metadata)[1]) {
+          unMatched.ID[j] <- queryID[i]
+          counter <- 0
         } else {
-          unMatched.ID[i] <- NA
+          unMatched.ID[j] <- NA
         }
       }
+        #print(paste("matched:",Matched.ID[i],"with",queryID[i]))
+        #print(paste("unmatched:",unMatched.ID[i],"with",queryID[i]))
     }
     setTxtProgressBar(pb, i)
   }
@@ -111,9 +117,9 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
 
 #-- Example usage: --#
 
-IDs <- Get.Matched.ID(queryID = c("Sample1_A", "Sample2_B", "Sample3_C","Sample5_D"),
-               metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4","Sample5"),
-                                     OtherInfo = c(10, 20, 30,NA)),
+IDs <- Get.Matched.ID(queryID = c("Sample0_A", "Sample2_B", "Sample3_C","Sample5_D",),
+               metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4","Sample5",NA),
+                                     OtherInfo = c(10, 20, 30,NA,34)),
                ByColname = "SampleID",keepCol = "OtherInfo")
 print(IDs)
 # Should return data.frame:
