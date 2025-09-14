@@ -78,7 +78,7 @@ write.csv(network_df,file = DataSetName,quote = F)
 network_ByGroup$Haplotype <- regmatches(network_ByGroup$label, regexpr("Hap[0-9]+$", network_ByGroup$label))
 
 #Get the number of haplotypes per site
-in_table_site_hap <- network_popmap %>% group_by(!!sym(GROUP),Haplotype) %>% 
+in_table_site_hap <- network_ByGroup %>% group_by(!!sym(GROUP),Haplotype) %>% 
   summarise(
     N = length(GROUP)
   )
@@ -101,12 +101,10 @@ in_table_df$Site <- row.names(in_table_df)
 in_table_df <- in_table_df %>% select(Site, everything())
 in_table_df
 
-#Reorder rows
+#Reorder rows by specified group order
 in_table_df <- in_table_df[site_ordered,]
-
 
 #save csv
 NameMatrix <- paste0("Haplotype_matrix_by-",GROUP,".csv")
 write.csv(in_table_df, file="Haplotype_matrix_mimic_Site.csv", quote = F,row.names = T)
-in_table_df
 
