@@ -9,14 +9,14 @@ library(readxl)
 library(ape)
 
 #Load source functions
-source("config.R")
+source("source.R")
 #Generate a file called "config.ymal" if it doesn't exist
-source("setup.R")
+source("config.R")
 
 # Read Input files 
-fasta.file <- read.FASTA(setup$file.name)
+fasta.file <- read.FASTA(config$file.name)
 fasta.labels <- names(fasta.file)
-metadata.file <- read_excel(setup$metadata.file,trim_ws = T,na = "NA")
+metadata.file <- read_excel(config$metadata.file,trim_ws = T,na = "NA")
 
 #############################################################################
 #--- Population assignment MAtrix for Network Analysis in Software PopArt---#
