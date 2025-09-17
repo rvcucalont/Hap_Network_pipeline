@@ -6,7 +6,7 @@ library(readxl)
 library(phytools)
 
 #Load source functions
-source("source.R")
+source("matche2metadata.R")
 #Generate a file called "config.ymal" if it doesn't exist
 source("config.R")
 
@@ -22,7 +22,7 @@ Output.Name <- "Shiner_Cytb_Coordenates.csv"
 colnames(MasterSheet)
 
 # Specify which columns to keep from the metadata file
-Keep.columns <- c("Seq.ID",	"Latitude",	"Longitude",	"Site",	"HUC2Name",	"Ecoregion",	
+Keep.columns <- c("Latitude",	"Longitude",	"Site",	"HUC2Name",	"Ecoregion",	
                   "HUC4Name",	"Species",	"mtDNA-ID",	"Source")
 
 
@@ -76,7 +76,11 @@ Map.Data <- Get.Matched.ID(queryID = tree$tip.label,
                    ByColname = "Seq.ID",
                    keepCol = Keep.columns)
 
-Map.Data <- na.omit(Map.Data)
+Map.Data[Map.Data$Seq.ID == "NC_080906.1",]
+
+
+
+#Map.Data <- na.omit(Map.Data)
 
 #Remove rows that do not have coordinates
 Map.Data <- Map.Data[!is.na(Map.Data$Latitude) & !is.na(Map.Data$Longitude),]
