@@ -121,15 +121,15 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
 
 }
 
-# #-- Example usage: --#
-# 
-# IDs <- Get.Matched.ID(queryID = c("Sample0_A", "Sample2_B", "Sample3_C","Sample5_D","Sample4"),
-#                metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4","Sample5",NA,"Sample"),
-#                                      OtherInfo = c(10, 20, 30,NA,34,NA)),
-#                ByColname = "SampleID",keepCol = "OtherInfo")
-# print(IDs)
-# # Should return data.frame:
-# # SampleID OtherInfo
-# # 1  Sample1        10
-# # 2  Sample2        20
+#-- Example usage: --#
+
+IDs <- Get.Matched.ID(queryID = c("Sample0_A", "Sample2_B", "Sample3_C","Sample5_D","Sample4"),
+               metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4","Sample5",NA,"Sample"),
+                                     OtherInfo = c(10, 20, 30,NA,34,NA)),
+               ByColname = "SampleID",keepCol = "OtherInfo")
+print(IDs)
+# Should return data.frame:
+# SampleID OtherInfo
+# 1  Sample1        10
+# 2  Sample2        20
 
