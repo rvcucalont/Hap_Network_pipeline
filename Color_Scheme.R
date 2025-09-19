@@ -7,7 +7,7 @@ tol21rainbow= c("#771155", "#AA4488", "#CC99BB", "#114477", "#4477AA", "#77AADD"
 
 # These are the colors selected
 Ecoregion = c("#114477", "#77AADD", "#117777", "#77CCCC",
-         "#AAAA44", "#AA7744", "#AA4455", "#DDAA77")
+         "#AAAA44", "#AA7744", "#AA4455", "#CC99BB")
 
 EcoSpecies = c("#114477", "#77AADD", "#77AADD","#117777","#117777","#117777", "#77CCCC",
               "#AAAA44", "#AAAA44","#AA7744", "#AA4455", "#DDAA77")

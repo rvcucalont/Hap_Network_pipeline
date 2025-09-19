@@ -9,7 +9,7 @@ library(readxl)
 library(ape)
 
 #Load source functions
-source("source.R")
+source("match2metadata.R")
 #Generate a file called "config.ymal" if it doesn't exist
 source("config.R")
 
@@ -27,7 +27,7 @@ Keep.columns <- c("Site","HUC2Name", "Region","System","Plain",
                   "Ecoregion","HUC4Name","Species","mtDNA-ID","Source")
 
 # Extract metadata based on matching IDs (function in functions.R)
-selected.data <- Get.Matched.ID(queryID = fasta.labels,
+selected.data <- match2metadata(LABEL = fasta.labels,
                metadata = metadata.file,
                ByColname = "Seq.ID",
                keepCol = Keep.columns)
@@ -64,7 +64,7 @@ selected.data
 #Choose columns to keep for the final matrix
 colnames(selected.data)
 
-GROUP <- "EcoSpecies"
+GROUP <- "Ecoregion"
 
 #Get the number of haplotypes per GROUP
 network_ByGroup <- selected.data %>% group_by(label,!!sym(GROUP)) %>% 
@@ -79,15 +79,19 @@ unique(network_ByGroup[,2])
 paste(unique(network_ByGroup[,2])[[1]], collapse = ", ")
 # site_ordered <- unique(network_ByGroup[,2])[[1]]
 
-# Manually set the order of the sites (optional)
-
+# Manually set the order of the GROUP selected (optional) - EcoSpecies
 site_ordered <- c("English_Winnipeg_Lakes", "Upper_Mississippi", "Upper_Mississippi*", "Laurentian_Great_Lakes", "Laurentian_Great_Lakes*",
                   "Laurentian_Great_Lakes**", "St.Lawrence*","Teays_Old_Ohio*", "Teays_Old_Ohio**",
                   "Ozark_Highlands*","Lower_Mississippi*", "Sabine_Galveston**")
 
+# Manually set the order of the GROUP selected (optional) - Site
 # site_ordered <- c( "McFarland", "Marcell", "LaSalleLake" ,  "WhiteEarthLake","Battle" , "Croix"   ,   "Pool1"  ,    "DevilsLake",
                    # "Pool4" ,  "OpenR" ,  "Ashtabula" , "FrenchCr", "Allegheny" , "Monongahela", "Dam2"  , "buchanani" , "volucellus"  )
 
+# Manually set the order of the GROUP selected (optional) - Ecoregion
+site_ordered <- c("English_Winnipeg_Lakes", "Upper_Mississippi", "Laurentian_Great_Lakes",
+                  "St.Lawrence","Teays_Old_Ohio",
+                  "Ozark_Highlands","Lower_Mississippi", "Sabine_Galveston")
 
 #convert the table into a pairwise matrix and then data frame for easier access to the values
 network_table <- xtabs(N~.,network_ByGroup)
