@@ -1,48 +1,48 @@
 ##Function to extract a specific identifiers from labels (e.g. fasta or tree files)
 # Load necessary libraries
 
-# Create a function that searches for a word on a string 
-# if the word is on the string then returns the same word that was searching otherwise returns NA
-# The function should also return NA if the query is NA
-# The word should be searched considering separators like "_" or "-" or " " or "."
-# Only one separator should be considered at a time, the one with highest frequency in the string
-Match.ID <- function(query="Sample1",string="Sample1.A") {
-  if (is.na(query)) {
-    return(list(NA_character_,NA_character_))
-  } else {
-    separators <- c("_", "-", " ", "."," | ")
-    # Count the occurrences of each separator in the string
-    # If the specific separator does not exit in the string then it should return 0
-    separator_counts <- sapply(X = separators,FUN = function(sep) sum(grepl(pattern = sep,string)))
-    #Select separator with highest frequency
-    best_separator <- separators[which.max(separator_counts)]
-    pattern1 <- paste0(query,best_separator)
-    pattern2 <- paste0(best_separator,query)
-    pattern3 <- paste0(best_separator,query,best_separator)
-    pattern4 <- paste0(query)
-    # Print the patterns being used for debugging
-    if (grepl(pattern1, string) || grepl(pattern2, string) || grepl(pattern3, string) || pattern4 == string) {
-      queryfound <- query
-      stringSearched <- string
-    } else {
-      #NoqueryFound <- query
-      queryfound <- NA_character_
-      stringSearched <- string
-    }
-    return(list(queryfound,stringSearched))
-  }
-}
-
 # Match the IDs from the tree to the metadata file
 # Create a vector to store the matched IDs
 
-Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
+match2metadata <- function(LABEL,metadata,ByColname,keepCol=NULL) {
+  # Create a function that searches for a word on a string 
+  # if the word is on the string then returns the same word that was searching otherwise returns NA
+  # The function should also return NA if the query is NA
+  # The word should be searched considering separators like "_" or "-" or " " or "."
+  # Only one separator should be considered at a time, the one with highest frequency in the string
+  Match.ID <- function(query="Sample1",string="Sample1.A") {
+    if (is.na(query)) {
+      return(list(NA_character_,NA_character_))
+    } else {
+      separators <- c("_", "-", " ", "."," | ")
+      # Count the occurrences of each separator in the string
+      # If the specific separator does not exit in the string then it should return 0
+      separator_counts <- sapply(X = separators,FUN = function(sep) sum(grepl(pattern = sep,string)))
+      #Select separator with highest frequency
+      best_separator <- separators[which.max(separator_counts)]
+      pattern1 <- paste0(query,best_separator)
+      pattern2 <- paste0(best_separator,query)
+      pattern3 <- paste0(best_separator,query,best_separator)
+      pattern4 <- paste0(query)
+      # Print the patterns being used for debugging
+      if (grepl(pattern1, string) || grepl(pattern2, string) || grepl(pattern3, string) || pattern4 == string) {
+        queryfound <- query
+        stringSearched <- string
+      } else {
+        #NoqueryFound <- query
+        queryfound <- NA_character_
+        stringSearched <- string
+      }
+      return(list(queryfound,stringSearched))
+    }
+  }
+ 
   # Check if ByColname exists in metadata
   if (!(ByColname %in% colnames(metadata))) {
     stop(paste("Column", ByColname, "not found in metadata"))
   }
   # Check if queryID is a character vector
-  if (!is.character(queryID)) {
+  if (!is.character(LABEL)) {
     stop("queryID must be a character vector")
   }
   # Check if metadata is a data frame
@@ -56,15 +56,15 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
   # Loop through the tree tip labels and the metadata file to find matches
   # If a match is found, store the matched ID in the Matched.ID vector
   # show progress bar "---" for the for loop
-  pb <- txtProgressBar(min = 0, max = length(queryID), style = 3)
-  for(i in 1:length(queryID)){
+  pb <- txtProgressBar(min = 0, max = length(LABEL), style = 3)
+  for(i in 1:length(LABEL)){
     #Matched.ID[i] <- NA
     #unMatched.ID[i] <- NA
     counter <- 0
     for(j in 1:dim(metadata)[1]){
-      if (!is.na(Match.ID(metadata[[ByColname]][j],queryID[i]))[[1]]){
-        Matched.ID[i] <- Match.ID(metadata[[ByColname]][j], queryID[i])[[1]]
-        label.ID[i] <- Match.ID(metadata[[ByColname]][j], queryID[i])[[2]]
+      if (!is.na(Match.ID(metadata[[ByColname]][j],LABEL[i]))[[1]]){
+        Matched.ID[i] <- Match.ID(metadata[[ByColname]][j], LABEL[i])[[1]]
+        label.ID[i] <- Match.ID(metadata[[ByColname]][j], LABEL[i])[[2]]
         # print(paste("matched:",Matched.ID[i],"with",queryID[i]))
         break
       } else {
@@ -74,7 +74,7 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
         # conditional if the total number of unmatched IDs is equal to the number of rows 
         #in the metadata then keep the unmatched ID
         if (counter == dim(metadata)[1]) {
-          unMatched.ID[length(unMatched.ID)+1] <- queryID[i]
+          unMatched.ID[length(unMatched.ID)+1] <- LABEL[i]
           # print(unMatched.ID)
           counter <- 0
         } 
@@ -110,26 +110,27 @@ Get.Matched.ID <- function(queryID,metadata,ByColname,keepCol=NULL) {
   }
   #print the number of matched IDs
   cat(paste("Number of matched IDs:", length(Matched.ID)," (", 
-            round((length(Matched.ID))/(length(queryID))*100,digits = 2),")%\n",sep = ""))
+            round((length(Matched.ID))/(length(LABEL))*100,digits = 2),")%\n",sep = ""))
   # print the number unmatched IDs
-  cat(paste("Number of unmatched IDs:", (length(queryID)-length(Matched.ID)),"\n"))
+  cat(paste("Number of unmatched IDs:", (length(LABEL)-length(Matched.ID)),"\n"))
   # print the unmatched IDs
-  cat(paste("Unmatched IDs:", paste(unMatched.ID, collapse = ", ")))
+  cat(paste("Unmatched IDs:", paste(unMatched.ID, collapse = ", "),"\n"))
   
   #Return the matched data
   return(Matched.Data)
 
 }
 
-# #-- Example usage: --#
-# 
-# IDs <- Get.Matched.ID(queryID = c("Sample0_A", "Sample2_B", "Sample3_C","Sample5_D","Sample4"),
-#                metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4","Sample5",NA,"Sample"),
-#                                      OtherInfo = c(10, 20, 30,NA,34,NA)),
-#                ByColname = "SampleID",keepCol = "OtherInfo")
-# print(IDs)
-# # Should return data.frame:
-# # SampleID OtherInfo
-# # 1  Sample1        10
-# # 2  Sample2        20
+#-- Example usage: --#
+
+IDs <- match2metadata(LABEL = c("Sample0_A", "Sample2_B", "Sample3_C","Sample5_D","Sample4"),
+               metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4","Sample5",NA,"Sample"),
+                                     OtherInfo = c(10, 20, 30,NA,34,NA)),
+               ByColname = "SampleID",keepCol = "OtherInfo")
+print(IDs)
+# Should return data.frame:
+#       label SampleID OtherInfo
+# 2 Sample2_B  Sample2        20
+# 4 Sample5_D  Sample5        NA
+# 3   Sample4  Sample4        30
 
