@@ -1,14 +1,79 @@
 #!/bin/bash
 
-# 1) Get desired clade. This can be done in R using the the get_descent function from the full tree.
 
+# Set argument to use a variable when active in script for example -l file.txt
+# Display help message if -h, --help is provided
+
+# Parse command line arguments using getopts
+fullFASTA=""
+labels=""
+outputNamePrefix=""
+
+print_help() {
+    echo "Usage: $0 -f <fullFASTA> [-l <labels>] [-p <outputNamePrefix>]"
+    echo "  -f, --file      : Path to the full aligned FASTA file."
+    echo "  -l, --labels    : Path to the text file containing sequence labels to extract. (optional)"
+    echo "  -p, --prefix    : Prefix for the output files."
+    echo "  -h, --help      : Display this help message."
+}
+
+# Support long options
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -f|--file)
+            fullFASTA="$2"
+            shift 2
+            ;;
+        -l|--labels)
+            labels="$2"
+            shift 2
+            ;;
+        -p|--prefix)
+            outputNamePrefix="$2"
+            shift 2
+            ;;
+        -h|--help)
+            print_help
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            print_help
+            exit 1
+            ;;
+    esac
+done
+
+# Check required arguments
+if [[ -z "$fullFASTA" ]]; then
+    echo "Error: -f|--file is required."
+    print_help
+    exit 1
+fi
+    
+
+# Check if dependencies are installed
+if ! command -v seqkit &> /dev/null
+then
+    echo "seqkit could not be found, please install it to proceed."
+    exit 1
+fi
+
+# 1) Define variables for input files and output names.
+# Get from command line arguments or set default values
+# fullFASTA=$1
+# labels=$2
+# outputNamePrefix=$3
+
+
+# fullFASTA="Cytb_full_aligned_06-18-2025.fasta"
+# labels="mimic_clade_labels.txt"
+# outputNamePrefix="mimic_clade_"
+
+# Define dependencies directory
+dependenciesDir="./dependencies"
 
 #2) Runn script to extract desired clade from original fasta file.
-
-fullFASTA="Cytb_full_aligned_06-18-2025.fasta"
-labels="mimic_clade_labels.txt"
-outputNamePrefix="mimic_clade_"
-
 #Convert dos2unix if needed
 dos2unix ${labels}
 
@@ -16,16 +81,16 @@ seqkit faidx ${fullFASTA} --infile-list ${labels}  > ${outputNamePrefix}${fullFA
 
 # # 3) Check sequences have all the same length and are aligned.
 
-AMAS trim -i ${outputNamePrefix}${fullFASTA} -f fasta -d dna
+${dependenciesDir}/AMAS.py trim -i ${outputNamePrefix}${fullFASTA} -f fasta -d dna
 
-# 4) Run Find_hap_fasta.py to find haplotypes in the clade fasta file.
-trimmedFasta="trimmed_${outputNamePrefix}${fullFASTA}-out.fas"
-popmap="${outputNamePrefix}popmap.txt"
-#Create a popmap file for the clade
-cat ${labels} | sed -E 's/(.+)/\1\tpop/' > ${popmap}
+# # 4) Run Find_hap_fasta.py to find haplotypes in the clade fasta file.
+# trimmedFasta="trimmed_${outputNamePrefix}${fullFASTA}-out.fas"
+# popmap="${outputNamePrefix}popmap.txt"
+# #Create a popmap file for the clade
+# cat ${labels} | sed -E 's/(.+)/\1\tpop/' > ${popmap}
 
-Find_hap_fasta.py -f ${trimmedFasta} -r ${popmap} -a -s
+# Find_hap_fasta.py -f ${trimmedFasta} -r ${popmap} -a -s
 
-#Convert to nexus format
-inputHapFasta=$(echo ${trimmedFasta} | cut -d '.' -f 1)
-AMAS convert -i ${inputHapFasta}_allhap.fasta -f fasta -u nexus -d dna
+# #Convert to nexus format
+# inputHapFasta=$(echo ${trimmedFasta} | cut -d '.' -f 1)
+# AMAS convert -i ${inputHapFasta}_allhap.fasta -f fasta -u nexus -d dna
