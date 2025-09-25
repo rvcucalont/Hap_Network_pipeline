@@ -102,11 +102,11 @@ echo "Trimming sequences to ensure they are aligned and of equal length..."
 ${dependenciesDir}/AMAS.py trim -i ${outputNamePrefix}_${fullFASTA} -f fasta -d dna && \
 echo "Trimmed fasta file created: trimmed_${outputNamePrefix}${fullFASTA}-out.fas"
 
-# # 4) Run Find_hap_fasta.py to find haplotypes in the clade fasta file.
-# trimmedFasta="trimmed_${outputNamePrefix}${fullFASTA}-out.fas"
-# popmap="${outputNamePrefix}popmap.txt"
-# #Create a popmap file for the clade
-# cat ${labels} | sed -E 's/(.+)/\1\tpop/' > ${popmap}
+# 4) Run Find_hap_fasta.py to find haplotypes in the clade fasta file.
+trimmedFasta="trimmed_${outputNamePrefix}${fullFASTA}-out.fas"
+popmap="${outputNamePrefix}popmap.txt"
+#Create a popmap file for the clade
+cat ${labels} | sed -E 's/(.+)/\1\tpop/' > ${popmap}
 
 # Find_hap_fasta.py -f ${trimmedFasta} -r ${popmap} -a -s
 
