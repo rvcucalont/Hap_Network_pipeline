@@ -100,16 +100,19 @@ echo "Fasta file with selected labels created: ${outputNamePrefix}_${fullFASTA}"
 # # 3) Check sequences have all the same length and are aligned.
 echo "Trimming sequences to ensure they are aligned and of equal length..."
 ${dependenciesDir}/AMAS.py trim -i ${outputNamePrefix}_${fullFASTA} -f fasta -d dna && \
-echo "Trimmed fasta file created: trimmed_${outputNamePrefix}${fullFASTA}-out.fas"
+echo "Trimmed fasta file created: trimmed_${outputNamePrefix}_${fullFASTA}-out.fas"
 
 # 4) Run Find_hap_fasta.py to find haplotypes in the clade fasta file.
-trimmedFasta="trimmed_${outputNamePrefix}${fullFASTA}-out.fas"
-popmap="${outputNamePrefix}popmap.txt"
-#Create a popmap file for the clade
+trimmedFasta="trimmed_${outputNamePrefix}_${fullFASTA}-out.fas"
+popmap="${outputNamePrefix}_popmap.txt"
+#Create a dummy popmap file 
 cat ${labels} | sed -E 's/(.+)/\1\tpop/' > ${popmap}
 
-# Find_hap_fasta.py -f ${trimmedFasta} -r ${popmap} -a -s
+echo "Finding haplotypes and assigning in fasta file label..."
+${dependenciesDir}/Find_hap_fasta.py -f ${trimmedFasta} -r ${popmap} -a -s
 
-# #Convert to nexus format
-# inputHapFasta=$(echo ${trimmedFasta} | cut -d '.' -f 1)
-# AMAS convert -i ${inputHapFasta}_allhap.fasta -f fasta -u nexus -d dna
+#Convert to nexus format
+inputHapFasta=$(echo ${trimmedFasta} | cut -d '.' -f 1)
+echo "Converting haplotype fasta to nexus format..."
+${dependenciesDir}/AMAS.py convert -i ${inputHapFasta}_allhap.fasta -f fasta -u nexus -d dna
+echo "Nexus file created: ${inputHapFasta}_allhap.fasta-out.nex"
