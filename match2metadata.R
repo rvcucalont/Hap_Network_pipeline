@@ -123,14 +123,14 @@ match2metadata <- function(LABEL,metadata,ByColname,keepCol=NULL) {
 
 #-- Example usage: --#
 
-IDs <- match2metadata(LABEL = c("Sample0_A", "Sample2_B", "Sample3_C","Sample5_D","Sample4"),
-               metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4","Sample5",NA,"Sample"),
-                                     OtherInfo = c(10, 20, 30,NA,34,NA)),
-               ByColname = "SampleID",keepCol = "OtherInfo")
-print(IDs)
-# Should return data.frame:
-#       label SampleID OtherInfo
-# 2 Sample2_B  Sample2        20
-# 4 Sample5_D  Sample5        NA
-# 3   Sample4  Sample4        30
+# IDs <- match2metadata(LABEL = c("Sample0_A", "Sample2_B", "Sample3_C","Sample5_D","Sample4"),
+#                metadata = data.frame(SampleID = c("Sample1", "Sample2", "Sample4","Sample5",NA,"Sample"),
+#                                      OtherInfo = c(10, 20, 30,NA,34,NA)),
+#                ByColname = "SampleID",keepCol = "OtherInfo")
+# print(IDs)
+# # Should return data.frame:
+# #       label SampleID OtherInfo
+# # 2 Sample2_B  Sample2        20
+# # 4 Sample5_D  Sample5        NA
+# # 3   Sample4  Sample4        30
 
