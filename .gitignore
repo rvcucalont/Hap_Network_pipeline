@@ -1,5 +1,4 @@
 # Ignore R project files
-*.Rproj
 .Rhistory
 .RData
 .Rproj.user/
