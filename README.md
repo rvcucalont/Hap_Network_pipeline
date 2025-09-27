@@ -13,7 +13,7 @@ This pipeline [1](#1-run-script-find_hapsh-in-bash-terminal) assigns haplotype n
    - `readxl` Needed to open excel file with metadata
    - `ape` needed to open fasta file
 # Workflow Steps
-# 1. Run script Find_hap.sh in bash terminal
+# 1. Run script `Find_hap.sh` in bash terminal
 1. **Download this repository on your local machine following either method**
    a) If already have git installed use: `git clone https://github.com/rvcucalont/Hap_Network_pipeline.git`
    b) Click bottom "<> Code" on the top right, download Zip, extract zip. 
