@@ -1,31 +1,125 @@
 #!/bin/bash
 
-# 1) Get desired clade. This can be done in R using the the get_descent function from the full tree.
 
+# Set argument to use a variable when active in script for example -l file.txt
+# Display help message if -h, --help is provided
+
+# Parse command line arguments using getopts
+fullFASTA=""
+labels=""
+outputNamePrefix=""
+
+print_help() {
+    echo "Usage: $0 -f <fullFASTA> [-l <labels>] [-p <outputNamePrefix>]"
+    echo "  -f, --file      : Path to the full aligned FASTA file."
+    echo "  -l, --labels    : Path to the text file containing sequence labels to extract. (optional)"
+    echo "  -p, --prefix    : Prefix for the output files."
+    echo "  -h, --help      : Display this help message."
+}
+
+# Support long options
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -f|--file)
+            fullFASTA="$2"
+            shift 2
+            ;;
+        -l|--labels)
+            labels="$2"
+            shift 2
+            ;;
+        -p|--prefix)
+            outputNamePrefix="$2"
+            shift 2
+            ;;
+        -h|--help)
+            print_help
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            print_help
+            exit 1
+            ;;
+    esac
+done
+
+# Check required arguments
+if [[ -z "$fullFASTA" ]]; then
+    echo "Error: -f|--file is required."
+    print_help
+    exit 1
+fi
+    
+
+# Check if dependencies are installed
+if ! command -v seqkit &> /dev/null
+then
+    echo "seqkit could not be found, please install it to proceed."
+    exit 1
+fi
+
+if ! command -v dos2unix &> /dev/null
+then
+    echo "dos2unix could not be found, please install it to proceed."
+    exit 1
+fi
+
+# 1) Prepare input files
+# Define dependencies directory
+dependenciesDir="./dependencies"
+
+# Check if files provided are unix formatted, if not convert them.
+echo "1) Checking file formats..."
+if file "${fullFASTA}" | grep -q "CRLF"; then
+    echo "Converting ${fullFASTA} to Unix format..."
+    dos2unix ${fullFASTA}
+fi
+
+if [ -f "${labels}" ]; then
+    echo "Labels file provided: ${labels}"
+else
+    echo "No labels file provided, extracting all sequences from ${fullFASTA}"
+    # Create a temporary labels file with all sequence names from the fasta
+    labels="temp_labels.txt"
+    seqkit fx2tab ${fullFASTA} | cut -f1 > ${labels}
+fi
+
+if file "${labels}" | grep -q "CRLF"; then
+    echo "Converting ${labels} to Unix format..."
+    dos2unix ${labels}
+fi
+
+# Check if output prefix is provided, if not set a default one.
+if [[ -z "$outputNamePrefix" ]]; then
+    outputNamePrefix="output"
+    echo "No output prefix provided, using default: ${outputNamePrefix}"
+else
+    echo "Output prefix set to: ${outputNamePrefix}"
+fi
 
 #2) Runn script to extract desired clade from original fasta file.
-
-fullFASTA="Cytb_full_aligned_06-18-2025.fasta"
-labels="mimic_clade_labels.txt"
-outputNamePrefix="mimic_clade_"
-
-#Convert dos2unix if needed
-dos2unix ${labels}
-
-seqkit faidx ${fullFASTA} --infile-list ${labels}  > ${outputNamePrefix}${fullFASTA}
+echo "2) Extracting sequences from ${fullFASTA} based on labels in ${labels}..."
+seqkit faidx ${fullFASTA} --infile-list ${labels}  > ${outputNamePrefix}_${fullFASTA} && \
+echo "Fasta file with selected labels created: ${outputNamePrefix}_${fullFASTA}"
 
 # # 3) Check sequences have all the same length and are aligned.
-
-AMAS trim -i ${outputNamePrefix}${fullFASTA} -f fasta -d dna
+echo "3) Checking if sequences are aligned and of equal length..."
+echo "Trimming sequences to ensure they are aligned and of equal length..."
+${dependenciesDir}/AMAS.py trim -i ${outputNamePrefix}_${fullFASTA} -f fasta -d dna --check-align && \
+echo "Trimmed fasta file created: trimmed_${outputNamePrefix}_${fullFASTA}-out.fas"
 
 # 4) Run Find_hap_fasta.py to find haplotypes in the clade fasta file.
-trimmedFasta="trimmed_${outputNamePrefix}${fullFASTA}-out.fas"
-popmap="${outputNamePrefix}popmap.txt"
-#Create a popmap file for the clade
+trimmedFasta="trimmed_${outputNamePrefix}_${fullFASTA}-out.fas"
+popmap="${outputNamePrefix}_popmap.txt"
+#Create a dummy popmap file 
 cat ${labels} | sed -E 's/(.+)/\1\tpop/' > ${popmap}
 
-Find_hap_fasta.py -f ${trimmedFasta} -r ${popmap} -a -s
+echo "Finding haplotypes and assigning in fasta file label..."
+${dependenciesDir}/Find_hap_fasta.py -f ${trimmedFasta} -r ${popmap} -a -s
 
 #Convert to nexus format
 inputHapFasta=$(echo ${trimmedFasta} | cut -d '.' -f 1)
-AMAS convert -i ${inputHapFasta}_allhap.fasta -f fasta -u nexus -d dna
+echo "Converting haplotype fasta to nexus format..."
+${dependenciesDir}/AMAS.py convert -i ${inputHapFasta}_allhap.fasta -f fasta -u nexus -d dna
+echo "Nexus file created: ${inputHapFasta}_allhap.fasta-out.nex"
