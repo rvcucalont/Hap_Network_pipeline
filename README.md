@@ -3,7 +3,6 @@ This pipeline (1) assigns haplotype names to headers on a fasta file and convert
 
 ## Prerequisites
 - Unix-like terminal
-- R and R Studio
 - Download [seqkit](https://bioinf.shenwei.me/seqkit/)
 
 # Workflow Steps
@@ -94,24 +93,31 @@ Usage: ./Find_hap.sh -f <fullFASTA> [-l <labels>] [-p <outputNamePrefix>]
 
 # 2. Run script Get_Matrix_Network.R in R Studio
 ## Prerequisites:
+- R 4.5.0 and R Studio 2025.09.0
 - `dplyr`
 - `readxl` Needed to open excel file with metadata
 - `ape` needed to open fasta file
-
+##
 1. **Open R Studio**
-   - I recommend open R Studio by clicking on file `Hap_Network_pipeline.Rproj` to ensure script remains in the current working directory.
+   - I recommend open R Studio by clicking on file `Hap_Network_pipeline.Rproj` to ensure workflow starts from working directory.
 2. **From R Studio, open the script `Get_Network_Matrix.R`**
 3. **Load libraries and custom functions (lines 1-12)**
 4. **Provide input files (line 15)**
-   - This will open an external window to edit with required file paths (i.e, fasta, and excel file with metadata).
-   - if the file are not in current directory. Make sure to modify the path using "/" as separators if working in Windows.
+   - This will generate a file called `config.R` and open an external window to edit with required file paths (i.e, fasta, and excel file with metadata).
+   - if the files are not in current directory. Make sure to modify the path using "/" as separators if working in Windows.
    - You can later modify these paths by opening the file `conig.yaml`
-5. **Load input files previously provided (lines18-20)**
+Here is an example of the input file path that needs to be edited:
+```
+file.name: 'file.fasta' #--> this file is in working directory
+metadata.file: 'C:/user/path/to/metadata/metadata.xlsx' #--> this file is not in working directory
+
+```
+5. **Load input files provided (lines 18-20)**
 6. **Run the rest of the script and modify with user-specific parameters**
    - There are 3 places that can be modified are pointed with `#--------> 1) description`
-   - 1) Provide name of column in excel file with ID that will match to the fasta file header. The ID does not need match the entire header name but it needs to match a unique identifier within the label.
-   - 2) Provide name of the column in excel file the population or trait assignemnt each sample belongs to.
-   - 3) provide the order you would like the population or trait assignemnt appear in the legend. (Optional)
+   1) Provide name of column in excel file with ID that will match to the fasta file header. The ID does not need match the entire header name but it needs to match a unique identifier within the label.
+   2) Provide name of the column in excel file the population or trait assignemnt each sample belongs to.
+   3) provide the order you would like the population or trait assignemnt appear in the legend. (Optional)
       - if not provided the default order will be kept
 
 
