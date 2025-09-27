@@ -90,6 +90,14 @@ if file "${labels}" | grep -q "CRLF"; then
     dos2unix ${labels}
 fi
 
+# Check if output prefix is provided, if not set a default one.
+if [[ -z "$outputNamePrefix" ]]; then
+    outputNamePrefix="output"
+    echo "No output prefix provided, using default: ${outputNamePrefix}"
+else
+    echo "Output prefix set to: ${outputNamePrefix}"
+fi
+
 #2) Runn script to extract desired clade from original fasta file.
 echo "2) Extracting sequences from ${fullFASTA} based on labels in ${labels}..."
 seqkit faidx ${fullFASTA} --infile-list ${labels}  > ${outputNamePrefix}_${fullFASTA} && \
