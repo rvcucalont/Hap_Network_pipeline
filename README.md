@@ -96,7 +96,7 @@ Usage: ./Find_hap.sh -f <fullFASTA> [-l <labels>] [-p <outputNamePrefix>]
 
 ---
 
-# 2. Run script Get_Matrix_Network.R in R Studio
+# 2. Run script `Get_Matrix_Network.R` in R Studio
 
 1. **Open R Studio**
    - I recommend open R Studio by clicking on file `Hap_Network_pipeline.Rproj` to ensure workflow starts from working directory.
