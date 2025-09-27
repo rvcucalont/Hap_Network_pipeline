@@ -1,12 +1,11 @@
 # Haplotype Network Pipeline
-This pipeline (1) assigns haplotype names to headers on a fasta file and converts it into a nexus file aligment. Then (2) creates a matrix based on user defined localities in coma delimited format. Both outputs can then be used in PopArt as input to generate an haplotype network. 
+This pipeline (1)[1. Run script Find_hap.sh in bash terminal] assigns haplotype names to headers on a fasta file and converts it into a nexus file aligment. Then (2) creates a matrix based on user defined localities in coma delimited format. Both outputs can then be used in PopArt as input to generate an haplotype network. 
 
 ## Prerequisites
 ### Step 1
 - Unix-like terminal
 - Download [seqkit](https://bioinf.shenwei.me/seqkit/)
 ### Step 2
-## Prerequisites:
 - R 4.5.0 and R Studio 2025.09.0
 - `dplyr`
 - `readxl` Needed to open excel file with metadata
