@@ -27,7 +27,7 @@ metadata.file <- read_excel(config$metadata.file,trim_ws = T,na = "NA")
 # Extract metadata based on matching IDs
 selected.data <- match2metadata(LABEL = fasta.labels,
                metadata = metadata.file,
-               ByColname = "Seq.ID") #---> Column name in metadata to match with fasta labels
+               ByColname = "Seq.ID") #-----------------------> 1) Column name in metadata to match with fasta labels
                 
 
 selected.data
@@ -62,7 +62,7 @@ selected.data
 #Choose columns to keep for the final matrix
 colnames(selected.data)
 
-GROUP <- "Ecoregion" #---> Column name in metadata to use for population assignment (e.g., Site, Ecoregion)
+GROUP <- "Ecoregion" #---------------------> 2) Column name in metadata to use for population assignment (e.g., Site, Ecoregion)
 
 #Get the number of haplotypes per GROUP
 network_ByGroup <- selected.data %>% group_by(label,!!sym(GROUP)) %>% 
@@ -76,7 +76,7 @@ network_ByGroup
 unique(network_ByGroup[,2])
 paste(unique(network_ByGroup[,2])[[1]], collapse = ", ")
 
-# Manually set the order of the GROUP selected (optional) - Ecoregion
+# Manually set the order of the GROUP selected (optional) - Ecoregion #----------------------------> 3) Modify as needed (Optional)
 # site_ordered <- c("English_Winnipeg_Lakes", "Upper_Mississippi", "Laurentian_Great_Lakes",
 #                   "St.Lawrence","Teays_Old_Ohio",
 #                   "Ozark_Highlands","Lower_Mississippi", "Sabine_Galveston")
