@@ -12,7 +12,7 @@ library(ape)
 source("./dependencies/match2metadata.R")
 #Generate a file called "config.ymal" if it doesn't exist
 #Edit generated file "config.ymal" with your input file names and metadata column names
-source("config.R")
+source("./dependencies/config.R")
 
 # Read Input files 
 fasta.file <- read.FASTA(config$file.name)
