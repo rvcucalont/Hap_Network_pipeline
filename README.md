@@ -3,7 +3,7 @@ This pipeline (1) assigns haplotype names to the headers on fasta file and conve
 
 ## Prerequisites
 - Unix-like terminal
-- R
+- R and R Studio
 - Download [seqkit](https://bioinf.shenwei.me/seqkit/)
 
 # Workflow Steps
@@ -93,7 +93,8 @@ Usage: ./Find_hap.sh -f <fullFASTA> [-l <labels>] [-p <outputNamePrefix>]
 
 ---
 
-# 2. Run script 
+# 2. Run script Get_Matrix_Network.R in R Studio
+
 
 
 # References:
