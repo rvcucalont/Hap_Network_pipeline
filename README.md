@@ -8,9 +8,10 @@ This pipeline [1](#1-run-script-find_hapsh-in-bash-terminal) assigns haplotype n
 - python3
 ### Step 2
 - R 4.5.0 and R Studio 2025.09.0
-- `dplyr`
-- `readxl` Needed to open excel file with metadata
-- `ape` needed to open fasta file
+- R Packages
+   - `dplyr`
+   - `readxl` Needed to open excel file with metadata
+   - `ape` needed to open fasta file
 # Workflow Steps
 # 1. Run script Find_hap.sh in bash terminal
 1. **Download this repository on your local machine following either method**
