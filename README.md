@@ -5,6 +5,7 @@ This pipeline [1](#1-run-script-find_hapsh-in-bash-terminal) assigns haplotype n
 ### Step 1
 - Unix-like terminal
 - Download [seqkit](https://bioinf.shenwei.me/seqkit/)
+- python3
 ### Step 2
 - R 4.5.0 and R Studio 2025.09.0
 - `dplyr`
