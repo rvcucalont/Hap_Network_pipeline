@@ -104,7 +104,7 @@ Usage: ./Find_hap.sh -f <fullFASTA> [-l <labels>] [-p <outputNamePrefix>]
 2. **From R Studio, open the script `Get_Network_Matrix.R`**
 3. **Load libraries and custom functions (lines 1-12)**
 4. **Provide input files (line 15)**
-   - This will generate a file called `config.R` and open an external window to edit with required file paths (i.e, fasta, and excel file with metadata).
+   - This will generate a file called `config.yaml` and open an external window to edit with required file paths (i.e, fasta, and excel file with metadata).
    - if the files are not in current directory. Make sure to modify the path using "/" as separators if working in Windows.
    - You can later modify these paths by opening the file `conig.yaml`
 Here is an example of the input file path that needs to be edited:
