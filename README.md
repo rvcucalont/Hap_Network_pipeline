@@ -1,5 +1,5 @@
 # Haplotype Network Pipeline
-This pipeline (1) assigns haplotype names to the headers on fasta file and converts it into a nexus file alignemnt and (2) creates a matrix based on user defined localities in coma delimited format. Both outputs can then be used in PopArt as input to generate an haplotype network. 
+This pipeline (1) assigns haplotype names to headers on a fasta file and converts it into a nexus file aligment. Then (2) creates a matrix based on user defined localities in coma delimited format. Both outputs can then be used in PopArt as input to generate an haplotype network. 
 
 ## Prerequisites
 - Unix-like terminal
@@ -8,10 +8,9 @@ This pipeline (1) assigns haplotype names to the headers on fasta file and conve
 
 # Workflow Steps
 # 1. Run script Find_hap.sh in bash terminal
-1. **Download this repository on your local machine**
-   - git clone https://github.com/rvcucalont/Hap_Network_pipeline.git
-   or
-   - Click bottom "<> Code" on the top right, download Zip, extract zip. 
+1. **Download this repository on your local machine following either method**
+   a) If already have git installed use: `git clone https://github.com/rvcucalont/Hap_Network_pipeline.git`
+   b) Click bottom "<> Code" on the top right, download Zip, extract zip. 
 2. **Open bash terminal and provide fasta file name and prefix output name to Find_hap.sh script**
 ## Example files:
 ### file.fasta
@@ -42,7 +41,7 @@ ACTAAA
 >Sample3_organism_site3_other_hap2
 AGTAAA
 ```
-Final output in nexus format.
+Final output will be converted to nexus format.
 
 ### If only want a subset, provide a list of sample name headers to extract 
 ```
@@ -55,7 +54,7 @@ ACTAAA
 >Sample3_organism_site3_other_hap2
 AGTAAA
 ```
-Final output in nexus format.
+Final output will be converted to nexus format.
 ## Flag details
 ```
 Usage: ./Find_hap.sh -f <fullFASTA> [-l <labels>] [-p <outputNamePrefix>]
@@ -65,10 +64,10 @@ Usage: ./Find_hap.sh -f <fullFASTA> [-l <labels>] [-p <outputNamePrefix>]
   -h, --help      : Display this help message.
 ```
 
-# This is what Find_hap.sh do.
+## This is what `Find_hap.sh` do.
 1. **Check file formats**
    - Ensure label file uses Unix line endings:
-   - Uses `dos2unix ` command to convert to poper format if needed
+   - Uses `dos2unix ` command to convert to proper format if needed
    - Check if fasta files is present
 
 2. **Extract Sequences from FASTA**
@@ -77,7 +76,7 @@ Usage: ./Find_hap.sh -f <fullFASTA> [-l <labels>] [-p <outputNamePrefix>]
 3. **Check and Trim Alignment**
    - Ensure all sequences are aligned and of equal length:
    - Uses AMAS.py (see further usages: https://github.com/marekborowiec/AMAS)
-   - AMAS.py stand-alone script located in `dependencies`. No need to download separatly.
+   - AMAS.py stand-alone script located in `dependencies`. No need to download separately.
 
 4. **Find Haplotypes**
    - Run custom python script `Find_hap_fasta.py` to assign haplotypes based on similarity
