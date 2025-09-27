@@ -64,7 +64,7 @@ Usage: ./Find_hap.sh -f <fullFASTA> [-l <labels>] [-p <outputNamePrefix>]
   -h, --help      : Display this help message.
 ```
 
-## This is what `Find_hap.sh` do.
+## This is what `Find_hap.sh` do internally.
 1. **Check file formats**
    - Ensure label file uses Unix line endings:
    - Uses `dos2unix ` command to convert to proper format if needed
@@ -93,6 +93,26 @@ Usage: ./Find_hap.sh -f <fullFASTA> [-l <labels>] [-p <outputNamePrefix>]
 ---
 
 # 2. Run script Get_Matrix_Network.R in R Studio
+## Prerequisites:
+- `dplyr`
+- `readxl` Needed to open excel file with metadata
+- `ape` needed to open fasta file
+
+1. **Open R Studio**
+   - I recommend open R Studio by clicking on file `Hap_Network_pipeline.Rproj` to ensure script remains in the current working directory.
+2. **From R Studio, open the script `Get_Network_Matrix.R`**
+3. **Load libraries and custom functions (lines 1-12)**
+4. **Provide input files (line 15)**
+   - This will open an external window to edit with required file paths (i.e, fasta, and excel file with metadata).
+   - if the file are not in current directory. Make sure to modify the path using "/" as separators if working in Windows.
+   - You can later modify these paths by opening the file `conig.yaml`
+5. **Load input files previously provided (lines18-20)**
+6. **Run the rest of the script and modify with user-specific parameters**
+   - There are 3 places that can be modified are pointed with `#--------> 1) description`
+   - 1) Provide name of column in excel file with ID that will match to the fasta file header. The ID does not need match the entire header name but it needs to match a unique identifier within the label.
+   - 2) Provide name of the column in excel file the population or trait assignemnt each sample belongs to.
+   - 3) provide the order you would like the population or trait assignemnt appear in the legend. (Optional)
+      - if not provided the default order will be kept
 
 
 
