@@ -142,4 +142,4 @@ in_table_df <- in_table_df[site_ordered,]
 #save csv
 NameMatrix <- paste0("Haplotype_matrix_by-",GROUP,".csv")
 write.csv(in_table_df, file=NameMatrix, quote = F,row.names = T)
-
+#End of script
