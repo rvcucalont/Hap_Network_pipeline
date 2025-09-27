@@ -59,21 +59,18 @@ then
     exit 1
 fi
 
-# 1) Define variables for input files and output names.
-# Get from command line arguments or set default values
-# fullFASTA=$1
-# labels=$2
-# outputNamePrefix=$3
+if ! command -v dos2unix &> /dev/null
+then
+    echo "dos2unix could not be found, please install it to proceed."
+    exit 1
+fi
 
-
-# fullFASTA="Cytb_full_aligned_06-18-2025.fasta"
-# labels="mimic_clade_labels.txt"
-# outputNamePrefix="mimic_clade_"
-
+# 1) Prepare input files
 # Define dependencies directory
 dependenciesDir="./dependencies"
 
 # Check if files provided are unix formatted, if not convert them.
+echo "1) Checking file formats..."
 if file "${fullFASTA}" | grep -q "CRLF"; then
     echo "Converting ${fullFASTA} to Unix format..."
     dos2unix ${fullFASTA}
@@ -94,12 +91,14 @@ if file "${labels}" | grep -q "CRLF"; then
 fi
 
 #2) Runn script to extract desired clade from original fasta file.
+echo "2) Extracting sequences from ${fullFASTA} based on labels in ${labels}..."
 seqkit faidx ${fullFASTA} --infile-list ${labels}  > ${outputNamePrefix}_${fullFASTA} && \
 echo "Fasta file with selected labels created: ${outputNamePrefix}_${fullFASTA}"
 
 # # 3) Check sequences have all the same length and are aligned.
+echo "3) Checking if sequences are aligned and of equal length..."
 echo "Trimming sequences to ensure they are aligned and of equal length..."
-${dependenciesDir}/AMAS.py trim -i ${outputNamePrefix}_${fullFASTA} -f fasta -d dna && \
+${dependenciesDir}/AMAS.py trim -i ${outputNamePrefix}_${fullFASTA} -f fasta -d dna --check-align && \
 echo "Trimmed fasta file created: trimmed_${outputNamePrefix}_${fullFASTA}-out.fas"
 
 # 4) Run Find_hap_fasta.py to find haplotypes in the clade fasta file.
