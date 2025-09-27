@@ -2,9 +2,15 @@
 This pipeline (1) assigns haplotype names to headers on a fasta file and converts it into a nexus file aligment. Then (2) creates a matrix based on user defined localities in coma delimited format. Both outputs can then be used in PopArt as input to generate an haplotype network. 
 
 ## Prerequisites
+### Step 1
 - Unix-like terminal
 - Download [seqkit](https://bioinf.shenwei.me/seqkit/)
-
+### Step 2
+## Prerequisites:
+- R 4.5.0 and R Studio 2025.09.0
+- `dplyr`
+- `readxl` Needed to open excel file with metadata
+- `ape` needed to open fasta file
 # Workflow Steps
 # 1. Run script Find_hap.sh in bash terminal
 1. **Download this repository on your local machine following either method**
@@ -92,12 +98,7 @@ Usage: ./Find_hap.sh -f <fullFASTA> [-l <labels>] [-p <outputNamePrefix>]
 ---
 
 # 2. Run script Get_Matrix_Network.R in R Studio
-## Prerequisites:
-- R 4.5.0 and R Studio 2025.09.0
-- `dplyr`
-- `readxl` Needed to open excel file with metadata
-- `ape` needed to open fasta file
-##
+
 1. **Open R Studio**
    - I recommend open R Studio by clicking on file `Hap_Network_pipeline.Rproj` to ensure workflow starts from working directory.
 2. **From R Studio, open the script `Get_Network_Matrix.R`**
@@ -114,12 +115,15 @@ metadata.file: 'C:/user/path/to/metadata/metadata.xlsx' #--> this file is not in
 ```
 5. **Load input files provided (lines 18-20)**
 6. **Run the rest of the script and modify with user-specific parameters**
-   - There are 3 places that can be modified are pointed with `#--------> 1) description`
+- There are 3 places that can be modified are pointed with `#--------> i. description`
    1) Provide name of column in excel file with ID that will match to the fasta file header. The ID does not need match the entire header name but it needs to match a unique identifier within the label.
    2) Provide name of the column in excel file the population or trait assignemnt each sample belongs to.
    3) provide the order you would like the population or trait assignemnt appear in the legend. (Optional)
       - if not provided the default order will be kept
-
+7. **Use nexus file from step 1 and .csv file in popArt**
+   -There are two matrices output called `popmap_network_by-*.csv` and `Haplotype_matrix_by-*.csv`
+   - `popmap_network_by-*.csv` to be used in PopArt
+   - `Haplotype_matrix_by-*.csv` can be open in excel to visualize haplotype distribution as matrix by user
 
 
 # References:
